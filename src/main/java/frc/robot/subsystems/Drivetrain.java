@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  *
  */
 public class Drivetrain extends Subsystem implements PIDOutput {
-    SpeedModifier m_SpeedModifier = SpeedModifier.FAST;
 	PIDController controller;
 	double pidOutput;
 	
@@ -33,19 +32,19 @@ public class Drivetrain extends Subsystem implements PIDOutput {
     }
     
     public void driveRobotTank(double leftSpeed, double rightSpeed) {
-    	RobotMap.chassis.tankDrive(leftSpeed * m_SpeedModifier.getValue(), rightSpeed * m_SpeedModifier.getValue());
+    	RobotMap.chassis.tankDrive(leftSpeed, rightSpeed);
     }
     
     public void driveRobotPID(double speed) {
-    	RobotMap.chassis.tankDrive((speed + (pidOutput / 4d)) * m_SpeedModifier.getValue(), (speed + (pidOutput / 4d)) * m_SpeedModifier.getValue());
+    	RobotMap.chassis.tankDrive((speed + (pidOutput / 4d)), (speed + (pidOutput / 4d)));
     }
     
     public void turnRobotPID(double speed) {
-    	RobotMap.chassis.tankDrive(pidOutput * speed *m_SpeedModifier.getValue(), pidOutput * speed *m_SpeedModifier.getValue());
+    	RobotMap.chassis.tankDrive(pidOutput * speed, pidOutput * speed);
     }
     
     public void driveRobotArcade(double move, double turn) {
-    	RobotMap.chassis.arcadeDrive(move *m_SpeedModifier.getValue(), turn *m_SpeedModifier.getValue());
+        RobotMap.chassis.arcadeDrive(move, turn);
     }
     
     public double getLeftEncoderDistance() {
@@ -80,10 +79,6 @@ public class Drivetrain extends Subsystem implements PIDOutput {
 	@Override
 	public void pidWrite(double output) {
 		pidOutput = output;
-    }
-    
-    public void setSpeedModifier(SpeedModifier speedModifier) {
-        m_SpeedModifier = speedModifier;
     }
 }
 

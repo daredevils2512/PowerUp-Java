@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  *
  */
 public class Elevator extends Subsystem {
-    private SpeedModifier m_SpeedModifier = SpeedModifier.FAST;
-
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 	static double pulseToFeet = 1 / 3944;
@@ -26,8 +24,8 @@ public class Elevator extends Subsystem {
     }
     
     public void setSpeed(double speed) {
-    	RobotMap.frontElevator.set(speed * m_SpeedModifier.getValue());
-    	RobotMap.rearElevator.set(speed * m_SpeedModifier.getValue());
+    	RobotMap.frontElevator.set(speed);
+    	RobotMap.rearElevator.set(-speed);
     }
     
     public double getLiftHeight() {
@@ -42,10 +40,6 @@ public class Elevator extends Subsystem {
 		double tol = tolerance / 2;
 		return (itemOne - tol <= itemTwo && itemTwo <= itemOne + tol) &&
 				(itemTwo - tol <= itemOne && itemOne <= itemTwo + tol);
-    }
-    
-    public void setSpeedModifier(SpeedModifier speedModifier) {
-        m_SpeedModifier = speedModifier;
     }
 }
 

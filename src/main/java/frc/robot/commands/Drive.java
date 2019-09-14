@@ -1,13 +1,14 @@
 package frc.robot.commands;
 
 import frc.robot.Robot;
-import frc.robot.SpeedModifier;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
 public class Drive extends Command {
+    private static double slowify = 0.5;
+
     public Drive() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
@@ -20,7 +21,8 @@ public class Drive extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.m_drivetrain.driveRobotArcade(Robot.m_oi.getMove(), Robot.m_oi.getTurn());
+        // Robot.m_drivetrain.driveRobotTank(Robot.m_oi.getMove() * slowify, Robot.m_oi.getTurn() * slowify);
+    	Robot.m_drivetrain.driveRobotArcade(Robot.m_oi.getMove() * slowify, Robot.m_oi.getTurn() * slowify);
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -36,5 +38,9 @@ public class Drive extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    }
+
+    public static void setSlowify(double value) {
+        slowify = value;
     }
 }

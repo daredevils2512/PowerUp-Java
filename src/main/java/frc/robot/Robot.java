@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.Drive;
 import frc.robot.subsystems.*;
 
 /**
@@ -22,19 +23,16 @@ import frc.robot.subsystems.*;
  * project.
  */
 public class Robot extends TimedRobot {
+	public static Limelight m_limelight;
 	public static NavX m_navX;
 	public static Drivetrain m_drivetrain;
 	public static Elevator m_elevator;
 	public static Intake m_intake;
 	public static OI m_oi;
 
-	enum Speed {
-		SLOW, MEDIUM, FAST
-	}
-
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
-	SendableChooser<SpeedModifier> m_speedChooser = new SendableChooser<>();
+	SendableChooser<Double> m_slowifyChooser = new SendableChooser<>();
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -43,14 +41,17 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		//chooser.addObject("My Auto", new MyAutoCommand());
-		m_speedChooser.addOption("Slow", SpeedModifier.SLOW);
-		m_speedChooser.addOption("Slow", SpeedModifier.MEDIUM);
-		m_speedChooser.addOption("Slow", SpeedModifier.FAST);
-		m_speedChooser.setDefaultOption("Fast", SpeedModifier.FAST);
+		m_slowifyChooser.addOption("100%", 1.0);
+		m_slowifyChooser.addOption("90%", 0.9);
+		m_slowifyChooser.addOption("80%", 0.8);
+		m_slowifyChooser.addOption("70%", 0.7);
+		m_slowifyChooser.addOption("60%", 0.6);
+		m_slowifyChooser.addOption("50%", 0.5);
+		m_slowifyChooser.setDefaultOption("100%", 1.0);
 		SmartDashboard.putData("Auto mode", m_chooser);
-		SmartDashboard.putData("Speed Modifier", m_speedChooser);
-		SmartDashboard.putBoolean("limit switch", m_elevator.getLimitSwitchValue());
+		SmartDashboard.putData("Slowify", m_slowifyChooser);
 		RobotMap.Init();
+		m_limelight = new Limelight();
 		m_navX = new NavX();
 		m_drivetrain = new Drivetrain();
 		m_elevator = new Elevator();
@@ -139,11 +140,16 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("NavX Yaw", RobotMap.navX.getYaw());
 		SmartDashboard.putNumber("NavX Roll", RobotMap.navX.getRoll());
 		SmartDashboard.putNumber("NavX Pitch", RobotMap.navX.getPitch());
+		SmartDashboard.putBoolean("limit switch", m_elevator.getLimitSwitchValue());
+		SmartDashboard.putBoolean("Limelight Has Target", m_limelight.hasTarget());
 
-		SpeedModifier speedModifier = m_speedChooser.getSelected();
-		m_elevator.setSpeedModifier(speedModifier);
-		m_drivetrain.setSpeedModifier(speedModifier);
-		m_intake.setSpeedModifier(speedModifier);
+		SmartDashboard.putNumber("DFL", RobotMap.frontLeftMotor.get());
+		SmartDashboard.putNumber("DBL", RobotMap.rearLeftMotor.get());
+		SmartDashboard.putNumber("DFR", RobotMap.frontRightMotor.get());
+		SmartDashboard.putNumber("DBR", RobotMap.rearRightMotor.get());
+
+		double slowify = m_slowifyChooser.getSelected() == null ? 1.0 : m_slowifyChooser.getSelected();
+		Drive.setSlowify(slowify);
 	}
 
 	/**
