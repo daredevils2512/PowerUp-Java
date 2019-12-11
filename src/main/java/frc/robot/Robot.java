@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -22,40 +21,18 @@ import frc.robot.subsystems.*;
  * project.
  */
 public class Robot extends TimedRobot {
-	public static NavX m_navX;
-	public static Drivetrain m_drivetrain;
-	public static Elevator m_elevator;
-	public static Intake m_intake;
 	public static OI m_oi;
-
-	enum Speed {
-		SLOW, MEDIUM, FAST
-	}
 
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
-	SendableChooser<SpeedModifier> m_speedChooser = new SendableChooser<>();
 
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
+	
 	@Override
 	public void robotInit() {
-		//chooser.addObject("My Auto", new MyAutoCommand());
-		m_speedChooser.addOption("Slow", SpeedModifier.SLOW);
-		m_speedChooser.addOption("Slow", SpeedModifier.MEDIUM);
-		m_speedChooser.addOption("Slow", SpeedModifier.FAST);
-		m_speedChooser.setDefaultOption("Fast", SpeedModifier.FAST);
-		SmartDashboard.putData("Auto mode", m_chooser);
-		SmartDashboard.putData("Speed Modifier", m_speedChooser);
-		SmartDashboard.putBoolean("limit switch", m_elevator.getLimitSwitchValue());
-		RobotMap.Init();
-		m_navX = new NavX();
-		m_drivetrain = new Drivetrain();
-		m_elevator = new Elevator();
-		m_intake = new Intake();
-		m_oi = new OI();
 	}
 
 	/**
@@ -65,13 +42,12 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void disabledInit() {
-		m_drivetrain.resetEncoders();
-		m_elevator.resetEncoder();
+
 	}
 
 	@Override
 	public void disabledPeriodic() {
-		Scheduler.getInstance().run();
+
 	}
 
 	/**
@@ -88,8 +64,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		m_autonomousCommand = m_chooser.getSelected();
-		m_drivetrain.resetEncoders();
-		m_elevator.resetEncoder();
 
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -114,8 +88,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		m_drivetrain.resetEncoders();
-		m_elevator.resetEncoder();
 		// This makes sure that the autonomous stops running when
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
@@ -131,19 +103,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		SmartDashboard.putNumber("Left Encoder", m_drivetrain.getLeftEncoderDistance());
-		SmartDashboard.putNumber("Right Encoder", m_drivetrain.getRightEncoderDistance());
-		SmartDashboard.putNumber("Elevator Encoder", m_elevator.getLiftHeight());
-		SmartDashboard.putBoolean("Intake Limit", m_intake.getLimitSwitchValue());
-		SmartDashboard.putBoolean("Elevator Limit", m_elevator.getLimitSwitchValue());
-		SmartDashboard.putNumber("NavX Yaw", RobotMap.navX.getYaw());
-		SmartDashboard.putNumber("NavX Roll", RobotMap.navX.getRoll());
-		SmartDashboard.putNumber("NavX Pitch", RobotMap.navX.getPitch());
-
-		SpeedModifier speedModifier = m_speedChooser.getSelected();
-		m_elevator.setSpeedModifier(speedModifier);
-		m_drivetrain.setSpeedModifier(speedModifier);
-		m_intake.setSpeedModifier(speedModifier);
 	}
 
 	/**
