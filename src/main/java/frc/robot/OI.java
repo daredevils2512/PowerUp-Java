@@ -7,9 +7,9 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.*;
+import frc.robot.commands.TestPrint;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -18,6 +18,13 @@ import edu.wpi.first.wpilibj.buttons.*;
 public class OI {
 	Joystick driver = new Joystick(0);
 	Joystick coDriver = new Joystick(1);
+	Button button = new JoystickButton(driver, 1);
+
+	public OI() {
+
+		button.whenPressed(new TestPrint());
+	}
+
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
 	//// joystick.
@@ -62,7 +69,7 @@ public class OI {
 	}
 	
 	public double getTurn() {
-		return -desenitize(driver.getRawAxis(4));
+		return -desenitize(driver.getRawAxis(0));
 	}
 	
 	public double getLiftControl() {
